@@ -4,6 +4,9 @@ template1 = """"Using the company name, {CompanyName}, and relevant details prov
 please research the market and analyze previous campaigns to develop a comprehensive and innovative marketing campaign strategy. 
 Consider the company's target audience, unique selling points, and industry trends in order to make informed suggestions for maximizing impact and achieving marketing goals.
 Provide a detailed campaign plan including objectives, target channels, content ideas, and a timeline for implementation."
+To achieve this, these are the tools that are at your disposal:
+- Search Engine: SerpAPI
+
 
 Company Details:
 
