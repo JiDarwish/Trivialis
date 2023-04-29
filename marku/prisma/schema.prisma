@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  // Add this
+  relationMode = "prisma"
+}
+
+model Campaign {
+    id          String   @id @default(cuid())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    elements    Element[]
+}
+
+model Element {
+    id          String   @id @default(cuid())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+    posts       Post[]
+    campaignId  String
+}
+
+model Post {
+    id          String   @id @default(cuid())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    element     Element  @relation(fields: [elementId], references: [id], onDelete: Cascade)
+    users       User[]
+    elementId   String
+}
+
+model User {
+    id            String      @id @default(cuid())
+    name          String?
+    email         String?     @unique
+    emailVerified DateTime?
+    image        String?
+    createdAt    DateTime    @default(now())
+    posts        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+    updatedAt    DateTime    @updatedAt
+    postId       String
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
