@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Any
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
@@ -13,8 +14,10 @@ from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
 import praw
-import custom_tools
+import reddit_tools
 from dotenv import load_dotenv
+sys.path.insert(1, "./langchain/langchain_templates/")
+import initial_template
 
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_AI_API_KEY")
@@ -27,10 +30,18 @@ tools = [
         name = "search",
         func=search.run,
         description="useful for when you need to answer questions about current events. You should ask targeted questions"
-    ),
-    WriteFileTool(),
-    ReadFileTool(),
+    )
 ]
+# prompt = PromptTemplate(
+#     input_variables=["Apple", "Industry", "TargetAudience", "UniqueSellingPoints", "PreviousCampaigns", "MarketingGoals"],
+#     template=initial_template.template1
+# )
 
-agent = initialize_agent(tools, llm, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
-agent.run("Who is Vito Vekic?")
+prompt = initial_template.initial_template.format(CompanyName ="Apple", Industry= "Technology", TargetAudience="Tech Enthusiasts",UniqueSellingPoints="High Quality Products", PreviousCampaigns= "iPhone 12", MarketingGoals= "Increase sales by 10%")
+
+
+# agent = initialize_agent(tools, llm, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+# agent.run(prompt)
+
+test = reddit_tools.Subreddit_Hot10Posts_Full()
+print(test._run("NonCredibleDefense"))
