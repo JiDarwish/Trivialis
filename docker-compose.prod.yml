@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+    networks:
+      - proxy-tier
+
+  letsencrypt-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - nginx-proxy
+    networks:
+      - proxy-tier
+
+  webapp:
+    build: ./webapp
+    volumes:
+      - ./webapp:/app
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    depends_on:
+      - langchain
+    networks:
+      - proxy-tier
+      - app-tier
+
+  langchain:
+    build: ./langchain
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - ./langchain:/app
+    expose:
+      - 8000
+    depends_on:
+      - db
+      - cache
+    networks:
+      - app-tier
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - app-tier
+
+  cache:
+    image: redis:6.2
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-tier
+
+networks:
+  proxy-tier:
+  app-tier:
+
+volumes:
+  postgres_data:
+  redis_data:
