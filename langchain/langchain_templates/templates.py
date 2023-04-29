@@ -22,6 +22,8 @@ initial_template = PromptTemplate(
 
 #print(initial_template.format(CompanyName ="Apple", Industry= "Technology", TargetAudience="Tech Enthusiasts",UniqueSellingPoints="High Quality Products", PreviousCampaigns= "iPhone 12", MarketingGoals= "Increase sales by 10%"))
 
+
+
 template2 = """Based on the initial research and analysis conducted on {CompanyName} and its previous campaigns, please refine the marketing campaign ideas by focusing on the most effective strategies and tactics.
 Identify the key elements that will contribute to a successful campaign and provide specific recommendations for improvement. 
 Outline a revised campaign plan that incorporates these refinements, including updated objectives, target channels, content ideas, and a timeline for implementation.
@@ -43,3 +45,16 @@ post_idea_template = PromptTemplate(
     input_variables=["CompanyName"],
     template=template3,
     )
+
+template4 = """Please conduct web research to gather information on the company, {CompanyName}
+and identify its main competitors within the {Industry} sector. Provide their names and a brief description of their products, services, pros and cons.
+Now that you have a better understanding of the company's competitors, research their marketing strategies and identify the most effective ones. Also identify any strategies that were not successful.
+Based on that knowledge and your previous research on {CompanyName}, brainstorm and suggest a new marketing strategy that will help the company stand out from its competitors.
+Provide a comprehensive overview of the company's competitive landscape, highlighting any trends or commonalities among their marketing approaches. 
+When all the information is gathered, provide a detailed description of the new marketing strategy, including objectives, target channels, content ideas, and a timeline for implementation.
+"""
+
+get_initial_info_template = PromptTemplate(
+    input_variables=["CompanyName", "Industry"],
+    template=template4,
+)
