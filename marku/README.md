@@ -1,126 +1,28 @@
-# meedle
+# Create T3 App
 
-## Features
+This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
-- **FastAPI** with Python 3.8
-- **React 16** with Typescript, Redux, and react-router
-- Postgres
-- SqlAlchemy with Alembic for migrations
-- Pytest for backend tests
-- Jest for frontend tests
-- Perttier/Eslint (with Airbnb style guide)
-- Docker compose for easier development
-- Nginx as a reverse proxy to allow backend and frontend on the same port
+## What's next? How do I make an app with this?
 
-## Development
+We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
 
-The only dependencies for this project should be docker and docker-compose.
+If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
 
-### Quick Start
+- [Next.js](https://nextjs.org)
+- [NextAuth.js](https://next-auth.js.org)
+- [Prisma](https://prisma.io)
+- [Tailwind CSS](https://tailwindcss.com)
+- [tRPC](https://trpc.io)
 
-Starting the project with hot-reloading enabled
-(the first time it will take a while):
+## Learn More
 
-```bash
-docker-compose up -d
-```
+To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
 
-To run the alembic migrations (for the users table):
+- [Documentation](https://create.t3.gg/)
+- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
 
-```bash
-docker-compose run --rm backend alembic upgrade head
-```
+You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
 
-And navigate to http://localhost:8042
+## How do I deploy this?
 
-_Note: If you see an Nginx error at first with a `502: Bad Gateway` page, you may have to wait for webpack to build the development server (the nginx container builds much more quickly)._
-
-Auto-generated docs will be at
-http://localhost:8042/api/docs
-
-### Rebuilding containers:
-
-```
-docker-compose build
-```
-
-### Restarting containers:
-
-```
-docker-compose restart
-```
-
-### Bringing containers down:
-
-```
-docker-compose down
-```
-
-### Frontend Development
-
-Alternatively to running inside docker, it can sometimes be easier
-to use npm directly for quicker reloading. To run using npm:
-
-```
-cd frontend
-npm install
-npm start
-```
-
-This should redirect you to http://localhost:3000
-
-### Frontend Tests
-
-```
-cd frontend
-npm install
-npm test
-```
-
-### Frontend Tests
-
-```
-docker-compose run frontend test
-```
-
-This is the same as running npm test from within the frontend directory
-
-## Logging
-
-```
-docker-compose logs
-```
-
-Or for a specific service:
-
-```
-docker-compose logs -f name_of_service # frontend|backend|db
-```
-
-## Project Layout
-
-```
-backend
-└── app
-    ├── alembic
-    │   └── versions # where migrations are located
-    ├── api
-    │   └── api_v1
-    │       └── endpoints
-    ├── core    # config
-    ├── db      # db models
-    ├── tests   # pytest
-    └── main.py # entrypoint to backend
-
-frontend
-└── public
-└── src
-    ├── components
-    │   └── Home.tsx
-    ├── config
-    │   └── index.tsx   # constants
-    ├── __tests__
-    │   └── test_home.tsx
-    ├── index.tsx   # entrypoint
-    └── App.tsx     # handles routing
-```
+Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
