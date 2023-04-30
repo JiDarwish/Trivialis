@@ -1,46 +1,23 @@
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:1.19.6-alpine
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./certbot-etc:/etc/letsencrypt
-      - ./certbot-var:/var/lib/letsencrypt
-    depends_on:
-      - webapp
-
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot-etc:/etc/letsencrypt
-      - ./certbot-var:/var/lib/letsencrypt
-
   webapp:
+    platform: "linux/amd64"
     build:
       context: ./webapp
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
+    image: t3-app
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - NEXT_PUBLIC_CLIENTVAR=${NEXT_PUBLIC_CLIENTVAR}
     depends_on:
       - langchain
 
   langchain:
     build: ./langchain
-    command:
-      [
-        "uvicorn",
-        "main:app",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000"
-      ]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
     volumes:
       - ./langchain:/app
     ports:
@@ -62,6 +39,25 @@ services:
     image: redis:6.2
     volumes:
       - redis_data:/data
+
+  webserver:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    depends_on:
+      - webapp
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
 volumes:
   postgres_data:
