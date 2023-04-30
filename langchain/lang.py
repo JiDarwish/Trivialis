@@ -86,14 +86,6 @@ class lang_utils():
         return writer.run(prompt_to_writer)
 
 
-
-
     # def Create_General_Post(self, query, company_info):
-
-
-
-lu = lang_utils()
-lu.Reddit_Write_Post("Assasins Creed Mirage", lu.Google_Research_Company("Ubisoft"))
-# lu.Google_Research_Company("Ubisoft")
 
 
