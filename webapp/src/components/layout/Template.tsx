@@ -12,12 +12,11 @@ const { Header } = Layout;
 const NavBar: FC = () => {
   const { data: session } = useSession();
   return (
-    <Header>
+    <div className="bg-gray-100 shadow-lg h-16 flex justify-between items-center px-6">
       <div className="flex justify-between w-full items-center">
         <div>
-          <Link href='/' className="text-white">
-            <span className="text-6xl mr-4">Marku</span>
-            <span className="text-xs">Marketing for you</span>
+          <Link href='/'>
+            <img alt="MarkU logo" src="logo.png" className="w-32 max-h-full h-auto object-contain" />
           </Link>
         </div>
 
@@ -40,7 +39,7 @@ const NavBar: FC = () => {
                 >
                   Sign Out
                 </Button>
-                <span className="text-white">
+                <span className="text-[#531DAB]">
                   <UserOutlined /> {session.user.email ? session.user.email : session.user.name}
                 </span>
               </div>
@@ -48,7 +47,7 @@ const NavBar: FC = () => {
           </div>
         </div>
       </div>
-    </Header>
+    </div>
   )
 }
 
@@ -71,11 +70,12 @@ const Template: React.FC<TemplateProps> = ({
   // classNames = "",
   // disableCenteredDisplay = false,
 }) => {
+
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
       <div className="absolute inset-0">
 

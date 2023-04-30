@@ -6,17 +6,17 @@ const ThreeCards: React.FC = () => {
   const cards = [
     {
       imageUrl: 'desk.jpg',
-      topMiddleText: 'Marketing march',
+      topMiddleText: '12-10-2023 12:00:00',
       bottomLeftText: 'Gaging the market',
     },
     {
       imageUrl: 'lamp.jpg',
-      topMiddleText: 'Shoes ar802-2',
+      topMiddleText: '14-02-2024 13:30:00',
       bottomLeftText: 'Targeting specific demographics',
     },
     {
       imageUrl: 'laptop.jpg',
-      topMiddleText: 'Handbag sr-2203',
+      topMiddleText: '09-04-2023 07:00:00',
       bottomLeftText: 'New product launch',
     },
   ];
