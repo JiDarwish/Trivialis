@@ -18,8 +18,6 @@ from langchain.agents import AgentType
 import praw
 import reddit_tools
 from dotenv import load_dotenv
-sys.path.insert(1, "./langchain/langchain_templates/")
-import templates
 
 class lang_utils():
     

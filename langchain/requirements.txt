@@ -2,3 +2,5 @@ praw
 langchain
 fastapi
 uvicorn
+python-dotenv
+openai
