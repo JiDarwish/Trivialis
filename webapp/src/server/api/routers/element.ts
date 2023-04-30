@@ -26,17 +26,17 @@ export const elementRouter = createTRPCRouter({
   createElement: protectedProcedure
     .input(z.object({
       campaignId: z.string(),
-      name: z.string(),
-      description: z.string(),
+      elementName: z.string(),
+      elementDescription: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const { campaignId, name, description } = input;
+      const { campaignId, elementName, elementDescription } = input;
 
       const element = await ctx.prisma.element.create({
         data: {
           campaignId,
-          name,
-          description,
+          name: elementName,
+          description: elementDescription,
         }
       });
 

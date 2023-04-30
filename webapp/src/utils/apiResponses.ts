@@ -1,4 +1,4 @@
-type ApiResponse<T = null> = {
+export type ApiResponse<T = null> = {
   status: 'success' | 'error';
   message: string;
   data?: T;

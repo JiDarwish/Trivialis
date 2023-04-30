@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import type { Prisma } from "@prisma/client";
 import { Button } from "antd";
 
+import type { ApiResponse } from 'marku/utils/apiResponses'
+
 
 const CampaignPage: NextPage = () => {
   const router = useRouter()
@@ -12,8 +14,9 @@ const CampaignPage: NextPage = () => {
   const { data: campaignResponse, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getCampaignById.useQuery({ id: id as string }, { enabled: !!id });
   const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError } = api.element.getElementsForCampaign.useQuery({ campaignId: id as string }, { enabled: !!id })
 
-  const campaignData : Prisma.CampaignGetPayload<null> = campaignResponse?.data
+  const campaignData: Prisma.CampaignGetPayload<null> = campaignResponse?.data
 
+  console.log(chill)
 
   return (
     <Template pageTitle="Campaign">
@@ -32,14 +35,14 @@ const CampaignPage: NextPage = () => {
               </div>
               <div>
                 Elements:
-                {elementsIsLoading ? <div>Loading...</div> 
-                : elementsIsError ? <div>Error</div>
-                : elementsResponse && elementsResponse.data?.map((element: Prisma.ElementGetPayload<null>) => (
-                  <div key={element.id}>
-                    <div>{element.name}</div>
-                    <div>{element.description}</div>
-                    </div>
-                ))}
+                {elementsIsLoading ? <div>Loading...</div>
+                  : elementsIsError ? <div>Error</div>
+                    : elementsResponse && elementsResponse.data?.map((element: Prisma.ElementGetPayload<null>) => (
+                      <div key={element.id}>
+                        <div>{element.name}</div>
+                        <div>{element.description}</div>
+                      </div>
+                    ))}
 
 
               </div>
