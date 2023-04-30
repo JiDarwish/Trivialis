@@ -5,19 +5,13 @@ import Template, { ExpandingDiv } from "marku/components/layout/Template";
 import Link from "next/link";
 
 const Home: NextPage = () => {
-  const {data, isLoading, isError } = api.company.getNothing.useQuery();
-
-  console.log("data", data);
-  console.log("isLoading", isLoading);
-  console.log("isError", isError);
-
-
 
   return (
     <Template pageTitle="Home">
       <div className="mt-10">
         <div>App is cool</div>
         <Link href="/company-info">Provide info about your company</Link>
+        <Link href="/campaign/new">Create a new campaign</Link>
       </div>
       <ExpandingDiv />
     </Template>

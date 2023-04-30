@@ -8,10 +8,6 @@ import {
 import { apiResponses } from "marku/utils/apiResponses";
 
 export const companyRouter = createTRPCRouter({
-  getNothing: publicProcedure
-    .query(({ }) => {
-      return apiResponses.success("Hello");
-    }),
   updateInformation: protectedProcedure
     .input(
       z.object({

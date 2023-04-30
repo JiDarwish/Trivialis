@@ -1,18 +1,18 @@
-type ApiResponse = {
-  status: number;
+type ApiResponse<T = null> = {
+  status: 'success' | 'error';
   message: string;
-  data?: any;
+  data?: T;
 };
 
 export const apiResponses = {
-  success: (data: any): ApiResponse => ({
-    status: 200,
-    message: "Success",
+  success: <T>(message: string, data: T): ApiResponse<T> => ({
+    status: "success",
+    message,
     data,
   }),
-  error: (message: string, status: number = 500): ApiResponse => ({
-    status,
+  error: <T>(message: string, data = undefined): ApiResponse<T> => ({
+    status: "error",
     message,
+    data,
   }),
 };
-

@@ -55,7 +55,6 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  campaigns     Campaign[]
   company       Company?   
 }
 
@@ -68,6 +67,7 @@ model Company {
   description String?
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String   @unique
+  campaigns Campaign[]
 }
 
 model VerificationToken {
@@ -82,10 +82,11 @@ model Campaign {
   id          String    @id @default(cuid())
   name        String
   description String?
+  goal        String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  creator     User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  creatorId   String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   String
   elements    Element[]
 }
 
