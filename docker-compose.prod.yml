@@ -1,23 +1,50 @@
 version: '3.8'
 
 services:
+  nginx:
+    image: nginx:1.19.6-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot-etc:/etc/letsencrypt
+      - ./certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - webapp
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot-etc:/etc/letsencrypt
+      - ./certbot-var:/var/lib/letsencrypt
+
   webapp:
-    platform: "linux/amd64"
     build:
       context: ./webapp
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_CLIENTVAR: "clientvar"
-    working_dir: /app
-    image: t3-app
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_CLIENTVAR=${NEXT_PUBLIC_CLIENTVAR}
     depends_on:
       - langchain
 
   langchain:
     build: ./langchain
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command:
+      [
+        "uvicorn",
+        "main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ]
+    volumes:
+      - ./langchain:/app
+    ports:
+      - 8000:8000
     depends_on:
       - db
       - cache
@@ -35,25 +62,6 @@ services:
     image: redis:6.2
     volumes:
       - redis_data:/data
-
-  nginx:
-    build: ./nginx
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/certbot.conf:/etc/nginx/certbot.conf
-      - ./nginx/data/certbot:/etc/letsencrypt
-    depends_on:
-      - webapp
-      - langchain
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./nginx/data/certbot:/etc/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgres_data:
