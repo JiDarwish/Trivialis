@@ -6,6 +6,7 @@ import {
   protectedProcedure,
 } from "marku/server/api/trpc";
 import { apiResponses } from "marku/utils/apiResponses";
+import { Campaign } from "@prisma/client";
 
 
 export const campaignRouter = createTRPCRouter({
@@ -30,10 +31,10 @@ export const campaignRouter = createTRPCRouter({
           }
         });
 
-        return apiResponses.success("Campaigns found", campaigns);
+        return apiResponses.success<Campaign[]>("Campaigns found", campaigns);
       } catch (e) {
         console.log(e);
-        return apiResponses.error("Error getting campaigns");
+        return apiResponses.error<Campaign[]>("Error getting campaigns");
       }
     }),
   getCampaignById: protectedProcedure
@@ -68,10 +69,10 @@ export const campaignRouter = createTRPCRouter({
           throw new Error("Campaign does not belong to user");
         }
 
-        return apiResponses.success("Campaign found", campaign);
+        return apiResponses.success<Campaign>("Campaign found", campaign);
       } catch (e) {
         console.log(e);
-        return apiResponses.error("Error getting campaign");
+        return apiResponses.error<Campaign>("Error getting campaign");
       }
     }),
   createCampaign: protectedProcedure
@@ -108,10 +109,10 @@ export const campaignRouter = createTRPCRouter({
           }
         });
 
-        return apiResponses.success("Campaign created", newCampaign);
+        return apiResponses.success<Campaign>("Campaign created", newCampaign);
       } catch (e) {
         console.log(e);
-        return apiResponses.error("Error creating campaign");
+        return apiResponses.error<Campaign>("Error creating campaign");
       }
     }),
   deleteCampaign: protectedProcedure

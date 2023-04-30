@@ -29,7 +29,7 @@ const CampaignPage: NextPage = () => {
   const { data: campaignResponse, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getCampaignById.useQuery({ id: campaignId as string }, { enabled: !!campaignId });
   const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError, refetch } = api.element.getElementsForCampaign.useQuery({ campaignId: campaignId as string }, { enabled: !!campaignId })
 
-  const campaignData: Prisma.CampaignGetPayload<null> = campaignResponse?.data
+  const campaignData: Prisma.CampaignGetPayload<null> = campaignResponse?.data as Prisma.CampaignGetPayload<null>
 
   const handleDeleteCampaign = async () => {
     const res = await deleteCamapignMutation.mutateAsync({ id: campaignId as string })

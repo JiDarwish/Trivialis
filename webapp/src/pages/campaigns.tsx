@@ -38,14 +38,16 @@ const CampaignsPage: NextPage = () => {
   }
 
 
+
   return (
     <Template pageTitle="Campaigns">
     <div className="w-full flex justify-end mt-10">
-      <Button type="primary" onClick={() => void router.push('/campaign/new')}>Create a new Campaign</Button> 
+      <Button type="primary" onClick={() => void router.push('/campaign/new')}>Create a new Campaign</Button>
     </div>
 
       <div>Here you see your campaigns: </div>
       <div className="w-1/2">
+
         {data?.data?.map(campaign => (
           <CampaignListItem key={campaign.id} campaign={campaign} handleDelete={handleDelete} />
         ))}

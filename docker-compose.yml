@@ -2,11 +2,18 @@ version: '3.8'
 
 services:
   webapp:
-    build: ./webapp
-    volumes:
-      - ./webapp:/app
+    platform: "linux/amd64"
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
     ports:
       - 3000:3000
+    image: t3-app
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - langchain
 
