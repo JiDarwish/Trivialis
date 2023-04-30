@@ -83,7 +83,7 @@ const Template: React.FC<TemplateProps> = ({
           <NavBar />
         }
 
-        <main className="max-w-7xl h-full mx-auto px-4 flex flex-col items-center w-11/12">
+        <main className="font-opensans max-w-7xl h-full mx-auto px-4 flex flex-col items-center w-11/12">
           {children}
         </main>
       </div>
