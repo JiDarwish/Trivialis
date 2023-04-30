@@ -44,23 +44,24 @@ class lang_utils():
             description="useful for when you need to ask with search"
             )
         ]
+
         self_ask_with_search = initialize_agent(tools, self.llm, 
                                             agent=AgentType.SELF_ASK_WITH_SEARCH, 
                                             verbose=True)
         company_info['name'] = company
-        company_info['background'] = self_ask_with_search.run(f"What is some background information about {company}?\
-                                            Your answer should not contain more than 200 words, and should include general information on {company}.")
+        # company_info['background'] = self_ask_with_search.run(f"What is some background information about {company}?\
+                                            # Your answer should not contain more than 200 words, and should include general information on {company}.")
         company_info['competitors'] = self_ask_with_search.run(f"What are 10 competitors of {company}?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
-        company_info['social_media_apps'] = self_ask_with_search.run(f"Which Social Media apps are most used by {company} customers?\
+        company_info['social_media_apps'] = self_ask_with_search.run(f"Which Social Media apps does the average customer of {company} use the most?\
                                            Answer as a ranked list with no and's in the format item_1,item_2,...,item_n")
-        company_info['industries_and_sectors'] = self_ask_with_search.run(f"What industry and sectors is {company} in?\
+        company_info['industries_and_sectors'] = self_ask_with_search.run(f"What industry and sectors is {company} a part of?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
         company_info['key_selling_points'] = self_ask_with_search.run(f"What are the key selling points of {company}'s products?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
-        company_info['subreddits'] = self_ask_with_search.run(f"Which subreddits are most suitable for {company}?\
+        company_info['subreddits'] = self_ask_with_search.run(f"Which Reddit subreddits are most suitable for {company} to post in based on their products?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
-        company_info['new_releases'] = self_ask_with_search.run(f"What are some new products released by {company} they may be promoting?\
+        company_info['new_releases'] = self_ask_with_search.run(f"What are some new products released by {company} in the last year?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
         return company_info
         
@@ -71,17 +72,25 @@ class lang_utils():
 
 #     def Reddit_Find_Relevant_Posts_in_Subreddit():
 
-    def Reddit_Write_Post(self, query, company_info):
+    def Reddit_Write_Post(self, post_topic, company_info):
         tools = load_tools(["google-serper"], llm=self.llm)
         tools.append(reddit_tools.Subreddit_Search_Relevant_N_Posts())
+        tools.append(reddit_tools.Subreddit_Top_N_Posts())
         writing_prompt = PromptTemplate(
-        input_variables = ["Request", "Subreddit", "N", "Topic", "Company", "Competitors", "Key_Selling_Points", "New_Releases"],
-        template = "You are a marketing professional. Create a {Request} for a promotional post in the {Subreddit} subreddit about the Topic {Topic} for the company {Company}.\n\
-            The {Request} should be in the the style of the subreddit based on the {N} most Relevant posts about that topic in that subreddit. Futher information to be taken into account when writing your marketing post will be below:\n\n\
-            Company Name: {Company}\nCompetitors: {Competitors}\nKey Selling Points: {Key_Selling_Points}\nNew Products Releases: {New_Releases}\n"
+            input_variables = ["Subreddit", "N", "Topic", "Company", "Competitors", "Key_Selling_Points"],
+            template = "You are a marketing professional. Create a promotional post in the {Subreddit} subreddit about the Topic \"{Topic}\" for the company \"{Company}\".\n\
+                Base the style of the post on the style of the titles of the {N} Top posts of all time, not the body of the posts, in that subreddit. Further information to be taken into account when writing your marketing post will be below:\n\n\
+                Company Name: {Company}\nCompetitors: {Competitors}\nCompany Key Selling Points: {Key_Selling_Points}\nYou may search any aditional context online using serper or google search."
         )
-        to_writer = writing_prompt.format(Request="body", Topic="Why PC is better than console", Subreddit="Gaming", N=1)
+        prompt_to_writer = writing_prompt.format(Topic=post_topic,
+                                                Subreddit="Gaming",
+                                                N=5,
+                                                Company=company_info['name'],
+                                                Competitors=company_info['competitors'],
+                                                Key_Selling_Points=company_info['key_selling_points'])
         writer = initialize_agent(tools, self.llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+        return writer.run(prompt_to_writer)
+
 
 
 
@@ -89,7 +98,8 @@ class lang_utils():
 
 
 
-lu = lang_utils()
-lu.Google_Research_Company("Volkswagen")
+# lu = lang_utils()
+# lu.Reddit_Write_Post("Ubisoft's newest game and what makes it super amazing!", lu.Google_Research_Company("Ubisoft"))
+# lu.Google_Research_Company("Ubisoft")
 
 
