@@ -1,58 +1,27 @@
 version: '3.8'
 
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
-      - "/etc/nginx/certs"
-    labels:
-      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
-    networks:
-      - proxy-tier
-
-  letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    volumes_from:
-      - nginx-proxy
-    networks:
-      - proxy-tier
-
   webapp:
-    build: ./webapp
-    volumes:
-      - ./webapp:/app
-    expose:
-      - 3000
+    platform: "linux/amd64"
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
+    image: t3-app
     environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - langchain
-    networks:
-      - proxy-tier
-      - app-tier
+      - nginx
 
   langchain:
     build: ./langchain
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-    volumes:
-      - ./langchain:/app
-    expose:
-      - 8000
     depends_on:
       - db
       - cache
-    networks:
-      - app-tier
 
   db:
     image: postgres:13
@@ -62,19 +31,30 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-    networks:
-      - app-tier
 
   cache:
     image: redis:6.2
     volumes:
       - redis_data:/data
-    networks:
-      - app-tier
 
-networks:
-  proxy-tier:
-  app-tier:
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certbot.conf:/etc/nginx/certbot.conf
+      - ./nginx/data/certbot:/etc/letsencrypt
+    depends_on:
+      - webapp
+      - langchain
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./nginx/data/certbot:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgres_data:
