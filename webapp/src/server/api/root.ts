@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "marku/server/api/trpc";
 import { campaignRouter } from "./routers/campaign";
+import { companyRouter } from "./routers/company";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { campaignRouter } from "./routers/campaign";
  */
 export const appRouter = createTRPCRouter({
   campaign: campaignRouter,
+  company: companyRouter,
 });
 
 // export type definition of API

@@ -56,6 +56,18 @@ model User {
   accounts      Account[]
   sessions      Session[]
   campaigns     Campaign[]
+  company       Company?   
+}
+
+
+model Company {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  description String?
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String   @unique
 }
 
 model VerificationToken {

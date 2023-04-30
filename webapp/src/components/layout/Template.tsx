@@ -1,8 +1,9 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
+
 import type { FC } from "react";
-import { UserOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { Layout, Button } from 'antd';
 
 const { Header } = Layout;
@@ -13,7 +14,7 @@ const NavBar: FC = () => {
     <Header>
       <div className="flex justify-between w-full items-center">
         <div>
-          <div className="text-white">
+          <div className="text-white cursor-pointer">
             <span className="text-6xl mr-4">Marku</span>
             <span className="text-xs">Marketing for you</span>
           </div>
@@ -22,20 +23,18 @@ const NavBar: FC = () => {
         <div>
           <div>
             {!session ? (
-              <>
-                <Button
-                  type="primary"
-                  icon={<LoginOutlined />}
-                  onClick={() => void signIn()}
-                >
-                  Sign In
+              <div>
+                <Button 
+                  type="link" 
+                  onClick={() => void signIn()} 
+                > 
+                  Sign In 
                 </Button>
-              </>
+              </div>
             ) : (
-              <>
+              <div>
                 <Button
                   type="link"
-                  icon={<LogoutOutlined />}
                   onClick={() => void signOut()}
                 >
                   Sign Out
@@ -43,7 +42,7 @@ const NavBar: FC = () => {
                 <span className="text-white">
                   <UserOutlined /> {session.user.email ? session.user.email : session.user.name}
                 </span>
-              </>
+              </div>
             )}
           </div>
         </div>

@@ -6,7 +6,7 @@ import Loading from "./Loading";
 
 const ProtectedRoute: FC<{ children: ReactNode }> = ({ children }) => {
 
-  const { data: session, status } = useSession()
+  const { status } = useSession()
 
   if (status === "loading") {
     return <Loading />
@@ -15,8 +15,6 @@ const ProtectedRoute: FC<{ children: ReactNode }> = ({ children }) => {
   if (status === "unauthenticated") {
     return <div>Unauthenticated</div>
   }
-
-  console.log("session", session)
 
   return (
     <>

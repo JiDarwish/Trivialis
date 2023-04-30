@@ -2,17 +2,22 @@ import { type NextPage } from "next";
 
 import { api } from "marku/utils/api";
 import Template, { ExpandingDiv } from "marku/components/layout/Template";
-import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
+  const {data, isLoading, isError } = api.company.getNothing.useQuery();
+
+  console.log("data", data);
+  console.log("isLoading", isLoading);
+  console.log("isError", isError);
+
+
 
   return (
     <Template pageTitle="Home">
-      <ExpandingDiv />
-      <div>
+      <div className="mt-10">
         <div>App is cool</div>
-        <div>Provide info about your company</div>
+        <Link href="/company-info">Provide info about your company</Link>
       </div>
       <ExpandingDiv />
     </Template>
