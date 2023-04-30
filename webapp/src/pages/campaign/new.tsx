@@ -46,7 +46,7 @@ const CreateCampaign: React.FC = () => {
     });
     if (campaignRes.status === 'success') {
       void message.success('Campaign created successfully');
-      void router.push(`/campaign/${campaignRes.data?.id as string}`);
+      void router.push(`/campaigns`);
     } else {
       void message.error('Failed to create campaign');
     }
