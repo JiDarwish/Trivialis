@@ -8,18 +8,12 @@ from langchain.chains import LLMChain
 from langchain.chains import APIChain
 from langchain.utilities import GoogleSerperAPIWrapper
 from langchain.agents import Tool
-from langchain.tools import BaseTool
-from langchain.tools.file_management.write import WriteFileTool
-from langchain.tools.file_management.read import ReadFileTool
 
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
-import praw
 import reddit_tools
 from dotenv import load_dotenv
-sys.path.insert(1, "./langchain/langchain_templates/")
-import templates
 
 class lang_utils():
     
@@ -57,7 +51,7 @@ class lang_utils():
                                            Answer as a ranked list with no and's in the format item_1,item_2,...,item_n")
         company_info['industries_and_sectors'] = self_ask_with_search.run(f"What industry and sectors is {company} a part of?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
-        company_info['key_selling_points'] = self_ask_with_search.run(f"What are the key selling points of {company}'s products?\
+        company_info['key_selling_points'] = self_ask_with_search.run(f"What are the key selling points of {company}'s products? Try to generalize and not base it off one product.\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
         company_info['subreddits'] = self_ask_with_search.run(f"Which Reddit subreddits are most suitable for {company} to post in based on their products?\
                                             Answer as a list with no and's in the format item_1,item_2,...,item_n")
@@ -78,13 +72,13 @@ class lang_utils():
         tools.append(reddit_tools.Subreddit_Top_N_Posts())
         writing_prompt = PromptTemplate(
             input_variables = ["Subreddit", "N", "Topic", "Company", "Competitors", "Key_Selling_Points"],
-            template = "You are a marketing professional. Create a promotional post in the {Subreddit} subreddit about the Topic \"{Topic}\" for the company \"{Company}\".\n\
-                Base the style of the post on the style of the titles of the {N} Top posts of all time, not the body of the posts, in that subreddit. Further information to be taken into account when writing your marketing post will be below:\n\n\
-                Company Name: {Company}\nCompetitors: {Competitors}\nCompany Key Selling Points: {Key_Selling_Points}\nYou may search any aditional context online using serper or google search."
+            template = "You are a marketing professional for {Company}. Create a promotional post for your company about \"{Topic}\"  to post in the {Subreddit} subreddit.\n\
+                Base the style of the post you will write on the style of the titles of the {N} Top posts of all time in that subreddit. Further information to be taken into account when writing your marketing post will be below:\n\n\
+                Company Name: {Company}\nCompetitors: {Competitors}\nCompany Key Selling Points: {Key_Selling_Points}\nSearch any aditional context regarding {Topic} and {Topic}s Key Selling Points online using serper or google search."
         )
         prompt_to_writer = writing_prompt.format(Topic=post_topic,
                                                 Subreddit="Gaming",
-                                                N=5,
+                                                N=10,
                                                 Company=company_info['name'],
                                                 Competitors=company_info['competitors'],
                                                 Key_Selling_Points=company_info['key_selling_points'])
@@ -98,8 +92,8 @@ class lang_utils():
 
 
 
-# lu = lang_utils()
-# lu.Reddit_Write_Post("Ubisoft's newest game and what makes it super amazing!", lu.Google_Research_Company("Ubisoft"))
+lu = lang_utils()
+lu.Reddit_Write_Post("Assasins Creed Mirage", lu.Google_Research_Company("Ubisoft"))
 # lu.Google_Research_Company("Ubisoft")
 
 
