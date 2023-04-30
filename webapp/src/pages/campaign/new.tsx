@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -57,7 +58,7 @@ const CreateCampaign: React.FC = () => {
         <div className="w-full flex flex-col items-center">
           <div className="text-3xl">Create Campaign</div>
           <form
-            onSubmit={void handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             className="w-full md:w-1/2 flex flex-col space-y-4"
           >
             <div className="flex flex-col">

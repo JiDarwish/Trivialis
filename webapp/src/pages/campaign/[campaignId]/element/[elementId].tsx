@@ -11,11 +11,8 @@ const ElementPage: NextPage = () => {
   const deleteElementMutation = api.element.deleteElement.useMutation()
 
   const handleDelete = async () => {
-    console.log('delete element')
     const res = await deleteElementMutation.mutateAsync({ elementId: elementId as string })
-    console.log('res', res)
     if (res.status === 'success') {
-      console.log("Yo here")
       void message.success('Element deleted successfully')
       void router.push(`/campaign/${campaignId as string}`)
     } else {
