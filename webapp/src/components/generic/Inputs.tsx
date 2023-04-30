@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Input } from "antd";
 import { FC } from "react";
 import { Controller, FieldError } from "react-hook-form";
@@ -7,7 +8,7 @@ const { TextArea } = Input;
 type InputFieldProps = {
   fieldName: string,
   control: any;
-  error: FieldError | undefined | any;
+  error: FieldError | undefined;
   type?: string;
   placeholder?: string;
 };
@@ -37,7 +38,7 @@ export const TextInputField: FC<InputFieldProps> = ({ fieldName, control, error,
 type TextAreaFieldProps = {
   fieldName: string;
   control: any;
-  error: FieldError | undefined | any;
+  error: FieldError | undefined;
   placeholder?: string;
   rows?: number;
 };

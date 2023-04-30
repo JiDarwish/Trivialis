@@ -4,8 +4,6 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { Prisma } from "@prisma/client";
 import { Button, message } from "antd";
-
-import type { ApiResponse } from 'marku/utils/apiResponses'
 import Link from "next/link";
 
 const ElementItem = ({ campaignId, element, handleDelete }: { campaignId: string, handleDelete: (elementId: string) => Promise<void>, element: Prisma.ElementGetPayload<null> }) => {
@@ -15,7 +13,7 @@ const ElementItem = ({ campaignId, element, handleDelete }: { campaignId: string
         <div>{element.name}</div>
         <div>{element.description}</div>
       </Link>
-      <Button danger onClick={() => handleDelete(element.id)}>Delete</Button>
+      <Button danger onClick={() => void handleDelete(element.id)}>Delete</Button>
     </div>
 
   )
@@ -34,20 +32,20 @@ const CampaignPage: NextPage = () => {
   const handleDeleteCampaign = async () => {
     const res = await deleteCamapignMutation.mutateAsync({ id: campaignId as string })
     if (res.status === 'success') {
-      message.success('Campaign deleted successfully')
-      router.push('/campaigns')
+      void message.success('Campaign deleted successfully')
+      void router.push('/campaigns')
     } else {
-      message.error('Error deleting campaign')
+      void message.error('Error deleting campaign')
     }
   }
 
   const handleDeleteElement = async (elementId: string) => {
     const res = await deleteElementMutation.mutateAsync({ elementId: elementId })
     if (res.status === 'success') {
-      message.success('Element deleted successfully')
-      refetch()
+      void message.success('Element deleted successfully')
+      void refetch()
     } else {
-      message.error('Error deleting element')
+      void message.error('Error deleting element')
     }
   }
 
@@ -56,7 +54,7 @@ const CampaignPage: NextPage = () => {
     <Template pageTitle="Campaign">
       <div className="w-full flex justify-end mt-20">
         <Button type="primary" onClick={() => void router.push(`/campaign/${campaignId as string}/element/new`)}>Create a new Element</Button>
-        <Button danger onClick={handleDeleteCampaign}>Delete Campaign</Button>
+        <Button danger onClick={void handleDeleteCampaign}>Delete Campaign</Button>
       </div>
       {campaignIsLoading ? <div>Loading...</div>
         : campaignIsError ? <div>Error</div>

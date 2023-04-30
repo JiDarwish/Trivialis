@@ -6,7 +6,6 @@ import { Button, message } from 'antd';
 import Template from 'marku/components/layout/Template';
 import { api } from 'marku/utils/api';
 import { TextAreaField, TextInputField } from 'marku/components/generic/Inputs';
-import { useSession } from 'next-auth/react';
 import ProtectedRoute from 'marku/components/layout/ProtectedRoute';
 import { useRouter } from 'next/router';
 
@@ -57,7 +56,7 @@ const CompanyInfo: React.FC = () => {
         <div className="w-full flex flex-col items-center">
           <div className='text-3xl'>Company Information</div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={void handleSubmit(onSubmit)}
             className="w-full md:w-1/2 flex flex-col space-y-4"
           >
             <div className="flex flex-col">

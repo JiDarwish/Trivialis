@@ -1,19 +1,20 @@
+import { Campaign } from "@prisma/client";
 import { Button, message } from "antd";
 import Loading from "marku/components/layout/Loading";
 import Template from "marku/components/layout/Template";
 import { api } from "marku/utils/api";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const CampaignListItem = ({ campaign, handleDelete }: { campaign: any, handleDelete: (id: string) => Promise<void>}) => {
+const CampaignListItem = ({ campaign, handleDelete }: { campaign: Campaign, handleDelete: (id: string) => Promise<void>}) => {
   return (
     <div className="flex justify-between">
       <Link href={`/campaign/${campaign.id}`}  className="flex w-full">
         <div className="mr-3">{campaign.name}</div>
         <div>{campaign.description}</div>
       </Link>
-      <Button danger onClick={() => handleDelete(campaign.id)}>Delete</Button>
+      <Button danger onClick={() => void handleDelete(campaign.id)}>Delete</Button>
     </div>
   )
 }
@@ -30,10 +31,10 @@ const CampaignsPage: NextPage = () => {
   const handleDelete = async (campaignId: string) => {
     const res = await deleteCampaignMutation.mutateAsync({ id: campaignId })
     if (res.status === 'success') {
-      message.success('Campaign deleted successfully')
-      refetch()
+      void message.success('Campaign deleted successfully')
+      void refetch()
     } else {
-      message.error('Error deleting campaign')
+      void message.error('Error deleting campaign')
     }
   }
 
