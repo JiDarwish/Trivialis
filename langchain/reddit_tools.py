@@ -98,7 +98,44 @@ class Subreddit_Hot10Posts_Full(BaseTool):
         """Use the tool asynchronously."""
         raise NotImplementedError("SubredditSearchHot10 does not support async")
 
+class Subreddit_Hot_N_Posts(BaseTool):
+    name = "Reddit_Search"
+    description = " "
+        
+    '''
+    Any intialization that needs to be done such as auth
+    '''
+    reddit = praw.Reddit(
+        client_id = os.getenv("REDDIT_CLIENT_ID"),
+        client_secret = os.getenv("REDDIT_API_KEY"),
+        user_agent = os.getenv("REDDIT_API_USER_AGENT"),
+    )
+
+    '''
+    Retrieves Titles for N "Hot" posts in queried subreddit
+    '''
+    def _run(self, query: str) -> str:
+        sub, n = query.split(",")
+        n = int(n)
+        subm = []
+        subreddit = self.reddit.subreddit(sub)
+        for submission in subreddit.hot(limit=n):
+            if submission.selftext != '':
+                post = "Post Title: " + submission.title+\
+                      " Post Body: " + submission.selftext
+                subm.append(post)
+            else:
+                post = "Post Title: " + submission.title+\
+                      " Post Body: " + submission.url
+                subm.append(post)
+
+        return " ".join(subm)
     
+    async def _arun(self, query: str, n: int=10) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("SubredditSearchHot10 does not support async")
+
+
 class RedditPostTool(BaseTool):
     name = "Reddit_Post"
     description = ""

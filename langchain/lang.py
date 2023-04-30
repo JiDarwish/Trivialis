@@ -17,31 +17,41 @@ import praw
 import reddit_tools
 from dotenv import load_dotenv
 sys.path.insert(1, "./langchain/langchain_templates/")
-import initial_template
+import templates
 
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_AI_API_KEY")
 os.environ["SERPER_API_KEY"] = os.getenv("SERPER_API_KEY")
 
 search = GoogleSerperAPIWrapper()
+sh10p = reddit_tools.Subreddit_Hot10Posts_Full()
+shnp = reddit_tools.Subreddit_Hot_N_Posts()
 llm = OpenAI(temperature=0)
 tools = [
     Tool(
         name = "search",
         func=search.run,
         description="useful for when you need to answer questions about current events. You should ask targeted questions"
+    ),
+    Tool(
+        name = "Subreddit Top N Posts",
+        func = shnp,
+        description = "Use this when you need to search for a number \"n\"  Hot posts in a specified subreddit.\
+              Should be a comma separated list of a String representing the subreddit and a integer n represeting\
+                the number of posts. For example: `test,10` if you are looking for 10 posts from the test subreddit."
     )
 ]
-# prompt = PromptTemplate(
-#     input_variables=["Apple", "Industry", "TargetAudience", "UniqueSellingPoints", "PreviousCampaigns", "MarketingGoals"],
-#     template=initial_template.template1
+testprompt = PromptTemplate(
+    input_variables=["Subreddit", "N"],
+    template="Create a post for the {Subreddit} subreddit based on the {N} hot posts in that subreddit."
+)
+# testprompt = PromptTemplate(
+#     input_variables=["Subreddit"],
+#     template="Create a post for the {Subreddit} subreddit based on the 10 current hot posts in that subreddit."
 # )
 
-prompt = initial_template.initial_template.format(CompanyName ="Apple", Industry= "Technology", TargetAudience="Tech Enthusiasts",UniqueSellingPoints="High Quality Products", PreviousCampaigns= "iPhone 12", MarketingGoals= "Increase sales by 10%")
+prompt = testprompt.format(Subreddit="NonCredibleDefense", N=20)
 
 
-# agent = initialize_agent(tools, llm, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
-# agent.run(prompt)
-
-test = reddit_tools.Subreddit_Hot10Posts_Full()
-print(test._run("NonCredibleDefense"))
+agent = initialize_agent(tools, llm, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+agent.run(prompt)
