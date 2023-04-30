@@ -3,25 +3,37 @@ import { api } from "marku/utils/api";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { Prisma } from "@prisma/client";
-import { Button } from "antd";
+import { Button, message } from "antd";
 
 import type { ApiResponse } from 'marku/utils/apiResponses'
+import Link from "next/link";
 
 
 const CampaignPage: NextPage = () => {
   const router = useRouter()
-  const { id } = router.query
-  const { data: campaignResponse, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getCampaignById.useQuery({ id: id as string }, { enabled: !!id });
-  const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError } = api.element.getElementsForCampaign.useQuery({ campaignId: id as string }, { enabled: !!id })
+  const { campaignId } = router.query
+  const deleteCamapignMutation = api.campaign.deleteCampaign.useMutation();
+  const { data: campaignResponse, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getCampaignById.useQuery({ id: campaignId as string }, { enabled: !!campaignId });
+  const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError } = api.element.getElementsForCampaign.useQuery({ campaignId: campaignId as string }, { enabled: !!campaignId })
 
   const campaignData: Prisma.CampaignGetPayload<null> = campaignResponse?.data
 
-  console.log(chill)
+  const handleDeleteCampaign = async () => {
+    const res = await deleteCamapignMutation.mutateAsync({ id: campaignId as string }) 
+    if (res.status === 'success') {
+      message.success('Campaign deleted successfully')
+      router.push('/campaigns')
+    } else {
+      message.error('Error deleting campaign')
+    }
+  }
+
 
   return (
     <Template pageTitle="Campaign">
       <div className="w-full flex justify-end mt-20">
-        <Button type="primary" onClick={() => void router.push(`/campaign/${id as string}/element/new`)}>Create a new Element</Button>
+        <Button type="primary" onClick={() => void router.push(`/campaign/${campaignId as string}/element/new`)}>Create a new Element</Button>
+        <Button danger onClick={handleDeleteCampaign}>Delete Campaign</Button>
       </div>
       {campaignIsLoading ? <div>Loading...</div>
         : campaignIsError ? <div>Error</div>
@@ -38,10 +50,10 @@ const CampaignPage: NextPage = () => {
                 {elementsIsLoading ? <div>Loading...</div>
                   : elementsIsError ? <div>Error</div>
                     : elementsResponse && elementsResponse.data?.map((element: Prisma.ElementGetPayload<null>) => (
-                      <div key={element.id}>
+                      <Link href={`/campaign/${campaignId as string}/element/${element.id}`} key={element.id}>
                         <div>{element.name}</div>
                         <div>{element.description}</div>
-                      </div>
+                      </Link>
                     ))}
 
 

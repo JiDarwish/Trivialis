@@ -24,11 +24,11 @@ type ElementSchemaType = z.infer<typeof elementSchema>;
 
 const CreateElement: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { campaignId } = router.query;
   const createElementMutation = api.element.createElement.useMutation();
   const { data: campaignResponse, isLoading, isError } = api.campaign.getCampaignById.useQuery(
-    { id: id as string },
-    { enabled: !!id },
+    { id: campaignId as string },
+    { enabled: !!campaignId },
   );
 
   const {
@@ -55,13 +55,13 @@ const CreateElement: React.FC = () => {
     const createElementRes = await createElementMutation.mutateAsync({
       elementName: data.elementName,
       elementDescription: data.elementDescription,
-      campaignId: id as string,
+      campaignId: campaignId as string,
     });
 
     if (createElementRes.status === 'success') {
       message.success('Element created successfully');
       console.log("response was", createElementRes.data)
-      router.push(`/campaign/${id}/element/${createElementRes.data?.id}/`);
+      router.push(`/campaign/${campaignId as string}/element/${createElementRes.data?.id as string}/`);
     } else {
       message.error('Failed to create element');
     }
@@ -112,3 +112,4 @@ const CreateElement: React.FC = () => {
 };
 
 export default CreateElement;
+

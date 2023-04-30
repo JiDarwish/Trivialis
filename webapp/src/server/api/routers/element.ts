@@ -42,5 +42,26 @@ export const elementRouter = createTRPCRouter({
 
       return apiResponses.success("Element created", element);
     }),
+  deleteElement: protectedProcedure
+    .input(z.object({
+      elementId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+
+        const { elementId } = input;
+
+        const element = await ctx.prisma.element.delete({
+          where: {
+            id: elementId,
+          }
+        });
+
+        return apiResponses.success("Element deleted", element);
+      } catch (e) {
+        console.log(e);
+        return apiResponses.error("Error deleting element");
+      }
+    }),
 });
 

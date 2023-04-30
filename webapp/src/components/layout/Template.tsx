@@ -5,6 +5,7 @@ import Head from "next/head";
 import type { FC } from "react";
 import { UserOutlined } from '@ant-design/icons';
 import { Layout, Button } from 'antd';
+import Link from "next/link";
 
 const { Header } = Layout;
 
@@ -14,10 +15,10 @@ const NavBar: FC = () => {
     <Header>
       <div className="flex justify-between w-full items-center">
         <div>
-          <div className="text-white cursor-pointer">
+          <Link href='/' className="text-white">
             <span className="text-6xl mr-4">Marku</span>
             <span className="text-xs">Marketing for you</span>
-          </div>
+          </Link>
         </div>
 
         <div>
