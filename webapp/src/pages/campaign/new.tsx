@@ -8,6 +8,8 @@ import ProtectedRoute from 'marku/components/layout/ProtectedRoute';
 import Template from 'marku/components/layout/Template';
 import { api } from 'marku/utils/api';
 import { useRouter } from 'next/router';
+import type { ApiResponse } from 'marku/utils/apiResponses';
+import type { Campaign } from '@prisma/client';
 
 type FormData = {
   campaignName: string;
@@ -36,16 +38,16 @@ const CreateCampaign: React.FC = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    const bla = await createCampaignMutation.mutateAsync({
+    const campaignRes: ApiResponse<Campaign> = await createCampaignMutation.mutateAsync({
       campaignName: data.campaignName,
       campaignDescription: data.campaignDescription,
       campaignGoal: data.campaignGoal,
     });
-    if (bla.status === 'success') {
-      message.success('Campaign created successfully');
-      router.push(`/campaign/${bla.data?.id}`);
+    if (campaignRes.status === 'success') {
+      void message.success('Campaign created successfully');
+      void router.push(`/campaign/${campaignRes.data?.id as string}`);
     } else {
-      message.error('Failed to create campaign');
+      void message.error('Failed to create campaign');
     }
   };
 
@@ -55,7 +57,7 @@ const CreateCampaign: React.FC = () => {
         <div className="w-full flex flex-col items-center">
           <div className="text-3xl">Create Campaign</div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={void handleSubmit(onSubmit)}
             className="w-full md:w-1/2 flex flex-col space-y-4"
           >
             <div className="flex flex-col">

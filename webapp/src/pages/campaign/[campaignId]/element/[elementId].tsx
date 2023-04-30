@@ -16,10 +16,10 @@ const ElementPage: NextPage = () => {
     console.log('res', res)
     if (res.status === 'success') {
       console.log("Yo here")
-      message.success('Element deleted successfully')
-      router.push(`/campaign/${campaignId as string}`)
+      void message.success('Element deleted successfully')
+      void router.push(`/campaign/${campaignId as string}`)
     } else {
-      message.error('Error deleting element')
+      void message.error('Error deleting element')
     }
   }
 
@@ -27,7 +27,7 @@ const ElementPage: NextPage = () => {
     <Template pageTitle="Element">
       <div>Welcome</div>
 
-      <Button type="primary" danger onClick={handleDelete}>Delete Element</Button>
+      <Button type="primary" danger onClick={void handleDelete}>Delete Element</Button>
     </Template>
   );
 }

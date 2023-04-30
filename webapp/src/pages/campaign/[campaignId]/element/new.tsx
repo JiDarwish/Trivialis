@@ -59,11 +59,11 @@ const CreateElement: React.FC = () => {
     });
 
     if (createElementRes.status === 'success') {
-      message.success('Element created successfully');
+      void message.success('Element created successfully');
       console.log("response was", createElementRes.data)
-      router.push(`/campaign/${campaignId as string}/element/${createElementRes.data?.id as string}/`);
+      void router.push(`/campaign/${campaignId as string}/element/${createElementRes.data?.id as string}/`);
     } else {
-      message.error('Failed to create element');
+      void message.error('Failed to create element');
     }
   };
 
@@ -73,7 +73,7 @@ const CreateElement: React.FC = () => {
         <div className="w-full flex flex-col items-center mt-10">
           <div className="text-3xl">Create element for {campaignName} campain</div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={void handleSubmit(onSubmit)}
             className="w-full md:w-1/2 flex flex-col space-y-4"
           >
             <div className="flex flex-col">
