@@ -64,7 +64,11 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
+  websiteLink String
   description String?
+  toneAndVoice String? @db.Text
+  preferredTargetAudiance String? @db.Text
+  socialMediaLinks String? @db.Text
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String   @unique
   campaigns Campaign[]

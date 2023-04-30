@@ -12,22 +12,22 @@ import { useRouter } from 'next/router';
 
 
 type FormData = {
-  companyName: string;
-  companyWebsite: string;
-  companyDescription: string;
+  toneAndVoice: string;
+  preferredTargetAudience: string;
+  socialMediaLinks: string;
 };
 
 const companySchema = z.object({
-  companyName: z.string().min(1, 'Company name is required'),
-  companyWebsite: z.string().min(1, 'Company website is required'),
-  companyDescription: z.string().min(1, 'Company description is required'),
+  toneAndVoice: z.string().min(0), 
+  preferredTargetAudience: z.string().min(0),
+  socialMediaLinks: z.string().min(0),
 });
 
 type CompanySchemaType = z.infer<typeof companySchema>;
 
 const CompanyInfo: React.FC = () => {
   const router = useRouter();
-  const updateCompanyInfoMutation = api.company.updateInformation.useMutation();
+  const updateAdditionalCompanyInformation = api.company.updateAdditionalCompanyInformation.useMutation();
 
   const {
     handleSubmit,
@@ -38,21 +38,20 @@ const CompanyInfo: React.FC = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    const companyRes = await updateCompanyInfoMutation.mutateAsync({
-      name: data.companyName,
-      website: data.companyWebsite,
-      description: data.companyDescription,
+    const updateCompanyRes = await updateAdditionalCompanyInformation.mutateAsync({
+      toneAndVoice: data.toneAndVoice,
+      preferredTargetAudience: data.preferredTargetAudience,
+      socialMediaLinks: data.socialMediaLinks,
     })
 
-    if (!companyRes.data) {
+    if(!updateCompanyRes.data) {
       void message.error('Error updating company info');
       return;
     }
 
-    void router.push(`/company/${companyRes.data.id}/additional-information`);
-  };
+    void router.push(`/company/${updateCompanyRes.data.id}/company-analysis`);
 
-  console.log("Data back is ", updateCompanyInfoMutation.data);
+  };
 
   return (
     <ProtectedRoute>
@@ -63,54 +62,53 @@ const CompanyInfo: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full md:w-1/2 flex flex-col space-y-4"
           >
+           {/*Create similar fields like the ones below for toneAndVoice, preferredTargetAudience, socialMediaLinks*/} 
             <div className="flex flex-col">
-              <label htmlFor="companyName" className="text-lg font-semibold">
-                Company Name
+              <label htmlFor="toneAndVoice" className="text-lg font-semibold">
+                Tone and voice of your company
               </label>
               <TextInputField
-                fieldName="companyName"
+                fieldName="toneAndVoice"
                 control={control}
-                error={errors.companyName}
-                placeholder="Enter your company name"
+                error={errors.toneAndVoice}
+                placeholder="Enter your tone and voice"
               />
-              {errors.companyName && (
+              {errors.toneAndVoice && (
                 <div className="text-sm text-red-500">
-                  {errors.companyName.message}
+                  {errors.toneAndVoice.message}
                 </div>
               )}
             </div>
-
             <div className="flex flex-col">
-              <label htmlFor="companyWebsite" className="text-lg font-semibold">
-                Company Website
+              <label htmlFor="preferredTargetAudience" className="text-lg font-semibold">
+                Company preferred target audience
               </label>
               <TextInputField
-                fieldName="companyWebsite"
+                fieldName="preferredTargetAudience"
                 control={control}
-                error={errors.companyWebsite}
-                placeholder="Enter your company website"
+                error={errors.preferredTargetAudience}
+                placeholder="Enter your company preferred target audience"
               />
-              {errors.companyWebsite && (
+              {errors.preferredTargetAudience && (
                 <div className="text-sm text-red-500">
-                  {errors.companyWebsite.message}
+                  {errors.preferredTargetAudience.message}
                 </div>
               )}
             </div>
-
             <div className="flex flex-col">
-              <label htmlFor="companyDescription" className="text-lg font-semibold">
-                Company Description
+              <label htmlFor="socialMediaLinks" className="text-lg font-semibold">
+                Company social medial links
               </label>
               <TextAreaField
-                fieldName="companyDescription"
+                fieldName="socialMediaLinks"
                 control={control}
-                error={errors.companyDescription}
-                placeholder="Enter your company description"
+                error={errors.socialMediaLinks}
+                placeholder="Enter your company social media links"
                 rows={4}
               />
-              {errors.companyDescription && (
+              {errors.socialMediaLinks && (
                 <div className="text-sm text-red-500">
-                  {errors.companyDescription.message}
+                  {errors.socialMediaLinks.message}
                 </div>
               )}
             </div>
@@ -127,4 +125,5 @@ const CompanyInfo: React.FC = () => {
 };
 
 export default CompanyInfo;
+
 

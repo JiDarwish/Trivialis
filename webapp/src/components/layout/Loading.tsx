@@ -1,10 +1,11 @@
+import { Spin } from 'antd';
 import { type FC } from 'react';
 
 
-const Loading : FC= () => {
+const Loading: FC = () => {
   return (
     <div className="flex justify-center items-center h-screen">
-      Loading bro
+      <Spin tip="Loading..." />
     </div>
   );
 }
