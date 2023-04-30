@@ -42,6 +42,9 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(prisma),
+  pages: {
+    newUser: "/company-info",
+  },
   providers: [
     RedditProvider({
       clientId: env.REDDIT_CLIENT_ID,

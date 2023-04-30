@@ -10,9 +10,11 @@ const Home: NextPage = () => {
     <Template pageTitle="Home">
       <div className="mt-10">
         <div>App is cool</div>
-        <Link href="/company-info">Provide info about your company</Link>
-        <Link href="/campaigns">View campaigns</Link>
-        <Link href="/campaign/new">Create a new campaign</Link>
+        <div className="flex flex-col">
+          <Link href="/company-info">Provide info about your company</Link>
+          <Link href="/campaigns">View campaigns</Link>
+          <Link href="/campaign/new">Create a new campaign</Link>
+        </div>
       </div>
       <ExpandingDiv />
     </Template>

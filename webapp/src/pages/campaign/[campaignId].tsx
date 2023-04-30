@@ -8,23 +8,46 @@ import { Button, message } from "antd";
 import type { ApiResponse } from 'marku/utils/apiResponses'
 import Link from "next/link";
 
+const ElementItem = ({ campaignId, element, handleDelete }: { campaignId: string, handleDelete: (elementId: string) => Promise<void>, element: Prisma.ElementGetPayload<null> }) => {
+  return (
+    <div className="flex justify-between w-full">
+      <Link href={`/campaign/${campaignId}/element/${element.id}`} key={element.id}>
+        <div>{element.name}</div>
+        <div>{element.description}</div>
+      </Link>
+      <Button danger onClick={() => handleDelete(element.id)}>Delete</Button>
+    </div>
+
+  )
+}
 
 const CampaignPage: NextPage = () => {
   const router = useRouter()
   const { campaignId } = router.query
   const deleteCamapignMutation = api.campaign.deleteCampaign.useMutation();
+  const deleteElementMutation = api.element.deleteElement.useMutation();
   const { data: campaignResponse, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getCampaignById.useQuery({ id: campaignId as string }, { enabled: !!campaignId });
-  const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError } = api.element.getElementsForCampaign.useQuery({ campaignId: campaignId as string }, { enabled: !!campaignId })
+  const { data: elementsResponse, isLoading: elementsIsLoading, isError: elementsIsError, refetch } = api.element.getElementsForCampaign.useQuery({ campaignId: campaignId as string }, { enabled: !!campaignId })
 
   const campaignData: Prisma.CampaignGetPayload<null> = campaignResponse?.data
 
   const handleDeleteCampaign = async () => {
-    const res = await deleteCamapignMutation.mutateAsync({ id: campaignId as string }) 
+    const res = await deleteCamapignMutation.mutateAsync({ id: campaignId as string })
     if (res.status === 'success') {
       message.success('Campaign deleted successfully')
       router.push('/campaigns')
     } else {
       message.error('Error deleting campaign')
+    }
+  }
+
+  const handleDeleteElement = async (elementId: string) => {
+    const res = await deleteElementMutation.mutateAsync({ elementId: elementId })
+    if (res.status === 'success') {
+      message.success('Element deleted successfully')
+      refetch()
+    } else {
+      message.error('Error deleting element')
     }
   }
 
@@ -47,16 +70,11 @@ const CampaignPage: NextPage = () => {
               </div>
               <div>
                 Elements:
-                {elementsIsLoading ? <div>Loading...</div>
-                  : elementsIsError ? <div>Error</div>
-                    : elementsResponse && elementsResponse.data?.map((element: Prisma.ElementGetPayload<null>) => (
-                      <Link href={`/campaign/${campaignId as string}/element/${element.id}`} key={element.id}>
-                        <div>{element.name}</div>
-                        <div>{element.description}</div>
-                      </Link>
-                    ))}
-
-
+                  {elementsIsLoading ? <div>Loading...</div>
+                    : elementsIsError ? <div>Error</div>
+                      : elementsResponse && elementsResponse.data?.map((element: Prisma.ElementGetPayload<null>) => (
+                        <ElementItem key={element.id} handleDelete={handleDeleteElement} campaignId={campaignId as string} element={element} />
+                      ))}
               </div>
             </div>
 
