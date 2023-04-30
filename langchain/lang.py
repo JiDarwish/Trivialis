@@ -24,8 +24,9 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_AI_API_KEY")
 os.environ["SERPER_API_KEY"] = os.getenv("SERPER_API_KEY")
 
 search = GoogleSerperAPIWrapper()
-sh10p = reddit_tools.Subreddit_Hot10Posts_Full()
-shnp = reddit_tools.Subreddit_Hot_N_Posts()
+sNhp = reddit_tools.Subreddit_Hot_N_Posts()
+sNtp = reddit_tools.Subreddit_Top_N_Posts()
+ssNtpbt = reddit_tools.Subreddit_Search_Top_N_Posts_By_Topic()
 llm = OpenAI(temperature=0)
 tools = [
     Tool(
@@ -34,24 +35,51 @@ tools = [
         description="useful for when you need to answer questions about current events. You should ask targeted questions"
     ),
     Tool(
-        name = "Subreddit Top N Posts",
-        func = shnp,
-        description = "Use this when you need to search for a number \"n\"  Hot posts in a specified subreddit.\
-              Should be a comma separated list of a String representing the subreddit and a integer n represeting\
-                the number of posts. For example: `test,10` if you are looking for 10 posts from the test subreddit."
-    )
+        name = "Subreddit N Relevant Posts By Topic",
+        func = ssNtpbt,
+        description = "Relevant Posts Search: Use this when you need to create something based on a specific topic based on a number of \"n\" relevant posts in a specified subreddit.\
+              Should be a comma separated list of a String representing the creation request, String representing the topic, a String representing the subreddit,\
+                  and a integer n represeting the number of posts. For example: `body,interesting stuff,test,10` if you are looking to create the text body for a post\
+                      based on 10 Top posts on the topic interesting stuff from the test subreddit."
+    ),
+    Tool(
+        name = "Subreddit N HOT Posts",
+        func = sNhp,
+        description = "Hot Posts Search: Use this when you need to create something based on a number \"n\" current Hottest posts in a specified subreddit.\
+              Should be a comma separated list of a String representing the creation request, a String representing the subreddit,\
+                  and a integer n represeting the number of posts. For example: `body,test,10` if you are looking to create the text body for a post\
+                      based on 10 Hot posts from the test subreddit."
+    ),
+    Tool(
+        name = "Subreddit N TOP Posts",
+        func = sNtp,
+        description = "Top Posts Search: Use this when you need to get \"n\" number of Top posts of all time in a specified subreddit.\
+              Should be a comma separated list of a String representing the creation request, a String representing the subreddit,\
+                  and a integer n represeting the number of posts. For example: `body,test,10` if you are looking to create the text body for a post\
+                      based on 10 Top posts from the test subreddit."
+    ),
 ]
-testprompt = PromptTemplate(
-    input_variables=["Subreddit", "N"],
-    template="Create a post for the {Subreddit} subreddit based on the {N} hot posts in that subreddit."
+testprompt_hot = PromptTemplate(
+    input_variables=["Request", "Topic", "Subreddit", "N"],
+    template="Create a {Request} for a post in the {Subreddit} subreddit about {Topic} based on the {N} current Hottest posts in that subreddit."
 )
-# testprompt = PromptTemplate(
-#     input_variables=["Subreddit"],
-#     template="Create a post for the {Subreddit} subreddit based on the 10 current hot posts in that subreddit."
-# )
+testprompt_top = PromptTemplate(
+    input_variables=["Request", "Topic", "Subreddit", "N"],
+    template="Create a {Request} for a post in the {Subreddit} subreddit about {Topic} based on the {N} Top posts of all time in that subreddit."
+)
+testprompt_topic_top = PromptTemplate(
+    input_variables=["Request", "Topic", "Subreddit", "N"],
+    template="Create a {Request} for a post in the {Subreddit} subreddit about the Topic {Topic}. Base the {Request} on the {N} Relevant posts about that topic and then also {N} Top posts in that subreddit."
+    # template="Create a {Request} for a post in the {Subreddit} subreddit about the Topic {Topic} based on the {N} Relevant posts about that topic and also {N} Top posts in that subreddit."
+)
 
-prompt = testprompt.format(Subreddit="NonCredibleDefense", N=20)
+prompt_hot = testprompt_hot.format(Request="title", Topic="", Subreddit="", N=50)
+prompt_top = testprompt_top.format(Request="title", Topic="", Subreddit="", N=50)
+prompt_topic_top = testprompt_topic_top.format(Request="title", Topic="", Subreddit="", N=25)
 
 
 agent = initialize_agent(tools, llm, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
-agent.run(prompt)
+
+agent.run(prompt_topic_top)
+
+
