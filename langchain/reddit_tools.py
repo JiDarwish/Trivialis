@@ -76,7 +76,7 @@ class Subreddit_Top_N_Posts(BaseTool):
     '''
     name = "Subreddit N TOP Posts"
     description = "Top Posts Search: Use this when you need to get \"n\" number of Top posts of all time in a specified subreddit.\
-              Should be a comma separated list of a String representing the creation request, a String representing the subreddit,\
+              Should be a comma separated list of a String representing the creation request (title or body), a String representing the subreddit,\
                   and a integer n represeting the number of posts. For example: `body,test,10` if you are looking to create the text body for a post\
                       based on 10 Top posts from the test subreddit."
         
