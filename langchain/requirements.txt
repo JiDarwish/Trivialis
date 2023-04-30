@@ -2,3 +2,4 @@ praw
 langchain
 fastapi
 uvicorn
+dotenv
