@@ -22,10 +22,10 @@ const CampaignListItem = ({ campaign, handleDelete }: { campaign: Campaign, hand
 }
 
 interface DataType {
-  key: number;
+  key: string;  // Change here from number to string
   campaignTitle: string;
-  description: string;
-  results: string;
+  description: string | null; // Change here to allow null
+  goals: string | null;  // Add this field
 }
 
 const CampaignsPage: NextPage = () => {
@@ -49,10 +49,10 @@ const CampaignsPage: NextPage = () => {
   const results = ['success', 'success', 'success', 'success', 'fail', 'neutral'];
 
   const tableData = data.data?.map((campaign, index) => ({
-    key: campaign.id, // Add a unique key for each row
+    key: campaign.id,
     campaignTitle: campaign.name,
     description: campaign.description,
-    goals: campaign.goal,
+    goals: campaign.goal,  // Add this field
   }));
 
   const columns: ColumnsType<DataType> = [
@@ -72,11 +72,9 @@ const CampaignsPage: NextPage = () => {
     {
       title: 'Goal',
       dataIndex: 'goals',
-      key: 'c=goals',
+      key: 'goals', // Change here from 'c=goals' to 'goals'
     },
-
   ];
-
 
   return (
     <Template pageTitle="Campaigns" >
