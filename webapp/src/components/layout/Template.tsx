@@ -16,7 +16,7 @@ const NavBar: FC = () => {
       <div className="flex justify-between w-full items-center">
         <div>
           <Link href='/'>
-            <img alt="MarkU logo" src="logo.png" className="w-32 max-h-full h-auto object-contain" />
+            <img alt="MarkU logo" src="/logo.png" className="w-32 max-h-full h-auto object-contain" />
           </Link>
         </div>
 
@@ -39,7 +39,7 @@ const NavBar: FC = () => {
                 >
                   Sign Out
                 </Button>
-                <span className="text-[#531DAB]">
+                <span className="">
                   <UserOutlined /> {session.user.email ? session.user.email : session.user.name}
                 </span>
               </div>

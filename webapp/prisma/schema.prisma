@@ -48,30 +48,42 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  company       Company?   
+  company       Company?
 }
 
-
 model Company {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  websiteLink String
-  description String?
-  toneAndVoice String? @db.Text
-  preferredTargetAudiance String? @db.Text
-  socialMediaLinks String? @db.Text
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String   @unique
-  campaigns Campaign[]
+  id                      String         @id @default(cuid())
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  name                    String
+  websiteLink             String
+  description             String?
+  toneAndVoice            String?        @db.Text
+  preferredTargetAudiance String?        @db.Text
+  socialMediaLinks        String?        @db.Text
+  user                    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                  String         @unique
+  campaigns               Campaign[]
+  report                  CompanyReport?
+}
+
+model CompanyReport {
+  id                   String  @id @default(cuid())
+  competitors          String? @db.Text
+  socialMediaApps      String? @db.Text
+  industriesAndSectors String? @db.Text
+  keySellingPoints     String? @db.Text
+  subreddits           String? @db.Text
+  newReleases          String? @db.Text
+  company              Company @relation(fields: [companyId], references: [id])
+  companyId            String  @unique
 }
 
 model VerificationToken {

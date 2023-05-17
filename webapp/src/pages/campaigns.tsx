@@ -1,6 +1,5 @@
-import { Campaign } from "@prisma/client";
-import { Button, Table, message } from "antd";
-import { ColumnsType } from "antd/es/table";
+import type { Campaign } from "@prisma/client";
+import { Button, Table } from "antd";
 import ThreeCards from "marku/components/generic/ThreeCards";
 import Loading from "marku/components/layout/Loading";
 import Template from "marku/components/layout/Template";
@@ -20,12 +19,13 @@ const CampaignListItem = ({ campaign, handleDelete }: { campaign: Campaign, hand
     </div>
   )
 }
+import type { ColumnsType } from "antd/es/table";
 
 interface DataType {
-  key: string;  // Change here from number to string
+  key: string;
   campaignTitle: string;
-  description: string | null; // Change here to allow null
-  goals: string | null;  // Add this field
+  description: string | null;
+  goals: string | null;
 }
 
 const CampaignsPage: NextPage = () => {
@@ -36,26 +36,25 @@ const CampaignsPage: NextPage = () => {
   if (isLoading) return <Loading />
   if (isError) return <div>Error</div>
 
-  const handleDelete = async (campaignId: string) => {
-    const res = await deleteCampaignMutation.mutateAsync({ id: campaignId })
-    if (res.status === 'success') {
-      void message.success('Campaign deleted successfully')
-      void refetch()
-    } else {
-      void message.error('Error deleting campaign')
-    }
-  }
+  // const handleDelete = async (campaignId: string) => {
+  //   const res = await deleteCampaignMutation.mutateAsync({ id: campaignId })
+  //   if (res.status === 'success') {
+  //     void message.success('Campaign deleted successfully')
+  //     void refetch()
+  //   } else {
+  //     void message.error('Error deleting campaign')
+  //   }
+  // }
 
-  const results = ['success', 'success', 'success', 'success', 'fail', 'neutral'];
-
-  const tableData = data.data?.map((campaign, index) => ({
-    key: campaign.id,
+  const tableData = data.data?.map((campaign, _) => ({
+    key: campaign.id, // Add a unique key for each row
     campaignTitle: campaign.name,
     description: campaign.description,
-    goals: campaign.goal,  // Add this field
+    goals: campaign.goal,
+    marketingMetrics: 'Click to view',
   }));
 
-  const columns: ColumnsType<DataType> = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'campaignTitle',
@@ -72,7 +71,15 @@ const CampaignsPage: NextPage = () => {
     {
       title: 'Goal',
       dataIndex: 'goals',
-      key: 'goals', // Change here from 'c=goals' to 'goals'
+      key: 'goals',
+    },
+    {
+      title: 'Marketing Metrics',
+      dataIndex: 'marketingMetrics',
+      key: 'marketingMetrics',
+      render: (text: string, record: DataType) => (
+        <Link href={`/campaign/${record.key}`}>Click to view</Link>
+      ),
     },
   ];
 

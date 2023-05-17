@@ -20,6 +20,44 @@ type FormData = {
   socialMediaLinks: string;
 };
 
+// type ApiCompanyResponse = {
+//   competitors: string;
+//   social_media_apps: string;
+//   industries_and_sectors: string;
+//   key_selling_points: string;
+//   subreddits: string;
+//   new_releases: string;
+// }
+
+// async function retryFetch<T>(url: string, options?: RequestInit, retries = 4, delay = 500): Promise<T> {
+//   for (let i = 0; i < retries; i++) {
+//     try {
+//       return await typedFetch<T>(url, options);
+//     } catch (error) {
+//       if (i < retries - 1) {
+//         await new Promise((resolve) => setTimeout(resolve, delay));
+//       } else {
+//         throw error;
+//       }
+//     }
+//   }
+//   throw new Error("Retry limit exceeded");
+// }
+//
+// async function typedFetch<T>(url: string, options?: RequestInit): Promise<T> {
+//   const controller = new AbortController()
+//   const timeoutId = setTimeout(() => controller.abort(), 100000)
+//   const response = await fetch(url, {
+//     ...options,
+//     signal: controller.signal
+//   });
+//   if (!response.ok) {
+//     throw new Error("Network response was not ok");
+//   }
+//   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+//   return await response.json();
+// }
+//
 const companySchema = z.object({
   companyName: z.string().min(1, 'Company name is required'),
   companyWebsite: z.string().min(1, 'Company website is required'),
@@ -34,6 +72,8 @@ type CompanySchemaType = z.infer<typeof companySchema>;
 const CompanyInfo: React.FC = () => {
   const router = useRouter();
   const updateCompanyInfoMutation = api.company.updateInformation.useMutation();
+  // const saveMyCompanyReportMutation = api.
+
 
   const {
     handleSubmit,
@@ -44,7 +84,7 @@ const CompanyInfo: React.FC = () => {
   });
 
   const updateCompanyInfo = async (data: FormData) => {
-    return await updateCompanyInfoMutation.mutateAsync({
+    const savedCompany = await updateCompanyInfoMutation.mutateAsync({
       name: data.companyName,
       website: data.companyWebsite,
       description: data.companyDescription,
@@ -52,17 +92,29 @@ const CompanyInfo: React.FC = () => {
       preferredTargetAudience: data.preferredTargetAudience,
       socialMediaLinks: data.socialMediaLinks,
     })
+
+    return savedCompany;
   }
 
   const onSubmitToAnalysis = async (data: FormData) => {
+    try {
+    void message.loading("Loading, this might take a while...")
     const companyRes = await updateCompanyInfo(data);
-
+    console.log("ComapnyRes", companyRes) 
+    console.log("ComapnyRes message", companyRes.message) 
+    console.log("ComapnyRes status", companyRes.status) 
+    console.log("ComapnyRes data", companyRes.data) 
     if (!companyRes.data) {
+
       void message.error('Error updating company info');
       return;
     }
 
     void router.push(`/company/${companyRes.data.id}/company-analysis`);
+    } catch (e) {
+      console.error(e);
+
+    }
   };
 
   const onSubmitToCampaign = async (data: FormData) => {
