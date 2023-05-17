@@ -20,6 +20,8 @@
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
     "antd": "^5.4.6",
+    "axios": "^1.4.0",
+    "axios-retry": "^3.4.0",
     "next": "^13.2.4",
     "next-auth": "^4.21.0",
     "react": "18.2.0",
