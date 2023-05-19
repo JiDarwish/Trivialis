@@ -19,7 +19,6 @@ const CampaignListItem = ({ campaign, handleDelete }: { campaign: Campaign, hand
     </div>
   )
 }
-import type { ColumnsType } from "antd/es/table";
 
 interface DataType {
   key: string;
@@ -29,12 +28,13 @@ interface DataType {
 }
 
 const CampaignsPage: NextPage = () => {
-  const { data, isLoading, isError, refetch } = api.campaign.getMyCampaigns.useQuery()
-  const deleteCampaignMutation = api.campaign.deleteCampaign.useMutation()
+  const { data: campaignData, isLoading: campaignIsLoading, isError: campaignIsError } = api.campaign.getMyCampaigns.useQuery()
+  // const deleteCampaignMutation = api.campaign.deleteCampaign.useMutation()
+  const { data: companyData, isLoading: companyIsLoading, isError: companyIsError } = api.company.getMyCompany.useQuery()
   const router = useRouter()
 
-  if (isLoading) return <Loading />
-  if (isError) return <div>Error</div>
+  if (campaignIsLoading || companyIsLoading) return <Loading />
+  if (campaignIsError || companyIsError) return <div>Error</div>
 
   // const handleDelete = async (campaignId: string) => {
   //   const res = await deleteCampaignMutation.mutateAsync({ id: campaignId })
@@ -46,7 +46,7 @@ const CampaignsPage: NextPage = () => {
   //   }
   // }
 
-  const tableData = data.data?.map((campaign, _) => ({
+  const tableData = campaignData.data?.map((campaign, _) => ({
     key: campaign.id, // Add a unique key for each row
     campaignTitle: campaign.name,
     description: campaign.description,
@@ -83,9 +83,13 @@ const CampaignsPage: NextPage = () => {
     },
   ];
 
+  console.log("Company", companyData)
+  console.log("Company data", companyData.data)
+
   return (
     <Template pageTitle="Campaigns" >
       <div className="w-full flex justify-end mt-10">
+        <Button type="link" onClick={() => void router.push(`/company/${companyData.data?.id as string}/company-analysis`)}>View my company analysis</Button>
         <Button type="primary" onClick={() => void router.push('/campaign/new')}>Create a new Campaign</Button>
       </div>
 

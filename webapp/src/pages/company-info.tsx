@@ -72,7 +72,6 @@ type CompanySchemaType = z.infer<typeof companySchema>;
 const CompanyInfo: React.FC = () => {
   const router = useRouter();
   const updateCompanyInfoMutation = api.company.updateInformation.useMutation();
-  // const saveMyCompanyReportMutation = api.
 
 
   const {
@@ -101,11 +100,7 @@ const CompanyInfo: React.FC = () => {
     void message.loading("Loading, this might take a while...")
     const companyRes = await updateCompanyInfo(data);
     console.log("ComapnyRes", companyRes) 
-    console.log("ComapnyRes message", companyRes.message) 
-    console.log("ComapnyRes status", companyRes.status) 
-    console.log("ComapnyRes data", companyRes.data) 
     if (!companyRes.data) {
-
       void message.error('Error updating company info');
       return;
     }

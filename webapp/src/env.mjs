@@ -25,6 +25,8 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: z.string(),
     REDDIT_CLIENT_ID: z.string(),
     REDDIT_CLIENT_SECRET: z.string(),
+    MARKU_API_KEY: z.string(),
+    MARKU_API_URI: z.string(),
   },
 
   /**
@@ -49,5 +51,7 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     REDDIT_CLIENT_ID: process.env.REDDIT_CLIENT_ID,
     REDDIT_CLIENT_SECRET: process.env.REDDIT_CLIENT_SECRET,
+    MARKU_API_KEY: process.env.MARKU_API_KEY,
+    MARKU_API_URI: process.env.MARKU_API_URI,
   },
 });

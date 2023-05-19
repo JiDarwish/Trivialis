@@ -6,11 +6,13 @@ import type { FC } from "react";
 import { UserOutlined } from '@ant-design/icons';
 import { Layout, Button } from 'antd';
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const { Header } = Layout;
 
 const NavBar: FC = () => {
   const { data: session } = useSession();
+  const router = useRouter()
   return (
     <div className="bg-gray-100 shadow-lg h-16 flex justify-between items-center px-6">
       <div className="flex justify-between w-full items-center">
@@ -33,6 +35,13 @@ const NavBar: FC = () => {
               </div>
             ) : (
               <div>
+
+                <Button
+                  type="link"
+                  onClick={() => void router.push('/campaigns')}
+                >
+                  Campaigns
+                </Button>
                 <Button
                   type="link"
                   onClick={() => void signOut()}
