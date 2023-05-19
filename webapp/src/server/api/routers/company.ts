@@ -13,7 +13,10 @@ import axiosRetry from "axios-retry";
 import { env } from "marku/env.mjs";
 
 async function typedFetch<T>(url: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(url, options);
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 80000);
+  const theOptions = { ...options, signal: controller.signal };
+  const response = await fetch(url, theOptions);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -21,11 +24,11 @@ async function typedFetch<T>(url: string, options?: RequestInit): Promise<T> {
 }
 type ApiCompanyReportResponse = {
   competitors: string;
-  socialMediaApps: string;
-  industriesAndSectors: string;
-  keySellingPoints: string;
+  social_media_apps: string;
+  industries_and_sectors: string;
+  key_selling_points: string;
   subreddits: string;
-  newReleases: string;
+  new_releases: string;
 }
 export const companyRouter = createTRPCRouter({
   updateInformation: protectedProcedure
@@ -95,19 +98,19 @@ export const companyRouter = createTRPCRouter({
           },
           update: {
             competitors: apiResponse.competitors,
-            socialMediaApps: apiResponse.socialMediaApps,
-            industriesAndSectors: apiResponse.industriesAndSectors,
-            keySellingPoints: apiResponse.keySellingPoints,
+            socialMediaApps: apiResponse.social_media_apps,
+            industriesAndSectors: apiResponse.industries_and_sectors,
+            keySellingPoints: apiResponse.key_selling_points,
             subreddits: apiResponse.subreddits,
-            newReleases: apiResponse.newReleases,
+            newReleases: apiResponse.new_releases,
           },
           create: {
             competitors: apiResponse.competitors,
-            socialMediaApps: apiResponse.socialMediaApps,
-            industriesAndSectors: apiResponse.industriesAndSectors,
-            keySellingPoints: apiResponse.keySellingPoints,
+            socialMediaApps: apiResponse.social_media_apps,
+            industriesAndSectors: apiResponse.industries_and_sectors,
+            keySellingPoints: apiResponse.key_selling_points,
             subreddits: apiResponse.subreddits,
-            newReleases: apiResponse.newReleases,
+            newReleases: apiResponse.new_releases,
             company: {
               connect: {
                 id: company.id
