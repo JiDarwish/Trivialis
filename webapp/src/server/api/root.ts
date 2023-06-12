@@ -3,6 +3,7 @@ import { campaignRouter } from "./routers/campaign";
 import { companyRouter } from "./routers/company";
 import { elementRouter } from "./routers/element";
 import { companyReportRouter } from "./routers/companyReport";
+import { waitingListRouter } from "./routers/waitingList";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   company: companyRouter,
   element: elementRouter,
   companyReport: companyReportRouter,
+  waitingListRouter: waitingListRouter,
 });
 
 // export type definition of API

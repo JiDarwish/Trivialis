@@ -126,3 +126,10 @@ model Post {
   element     Element  @relation(fields: [elementId], references: [id], onDelete: Cascade)
   elementId   String
 }
+
+model WaitingListUser {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+}

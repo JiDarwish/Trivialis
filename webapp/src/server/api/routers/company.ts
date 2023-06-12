@@ -120,9 +120,7 @@ export const companyRouter = createTRPCRouter({
         });
         console.log("newCompanyReport", newCompanyReport);
 
-
-
-        return apiResponses.success<Company>(`success ${apiResponse.competitors} ${apiResponse.subreddits}${apiResponse.socialMediaApps}${apiResponse.newReleases}${apiResponse.keySellingPoints}`, company);
+        return apiResponses.success<Company>(`success`, company);
       } catch (e) {
         return apiResponses.error<Company>(`Error updating company`);
       }
