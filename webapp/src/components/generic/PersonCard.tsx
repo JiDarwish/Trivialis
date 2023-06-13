@@ -1,5 +1,6 @@
 import { Card } from 'antd';
 import { LinkedinOutlined } from '@ant-design/icons';
+import Image from 'next/image';
 
 const { Meta } = Card;
 
@@ -13,15 +14,14 @@ interface PersonProps {
 const PersonCard: React.FC<PersonProps> = ({ photo, name, title, linkedin }) => {
   return (
     <Card
-      hoverable
       style={{ width: 240 }}
       cover={
-        <img 
+        <Image 
           alt="Employee Photo" 
           src={photo} 
+          height={200}
+          width={200}
           style={{ 
-            width: '100%', 
-            height: '200px', 
             objectFit: 'cover' 
           }} 
         />
